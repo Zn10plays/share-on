@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { isCurrentRoomActive } from './api/mannager'
 import { useNavigate } from 'react-router-dom'
-import './App.css'
+import './Join.css'
 
 function App() {
   const [validity, setValidity] = useState(true);
