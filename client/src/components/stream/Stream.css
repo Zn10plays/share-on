@@ -1,0 +1,14 @@
+.stream {
+  background-color: white;
+  border: solid #ececec;
+  border-radius: 0.5rem;
+  height: 80vh;
+  width: 80vw;
+}
+
+.options {
+  border-bottom: solid rgb(117, 117, 117);
+  background-color: gray;
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 10px;
+}
