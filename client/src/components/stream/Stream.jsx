@@ -5,11 +5,12 @@ import { useParams } from 'react-router-dom';
 import './Stream.css';
 
 function Stream() {
-  const urlParams = useParams()
+  const urlParams = useParams();
 
   function handleAdd() {
 
   }
+
   return <div className="App">
     <div className="stream">
     <Nav variant="pills" className='options'>
@@ -20,5 +21,7 @@ function Stream() {
     </div>
   </div>
 }
+
+
 
 export default Stream;
