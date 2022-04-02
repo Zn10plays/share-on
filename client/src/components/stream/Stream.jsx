@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
+import Note from '../note/Note.jsx'
 import './Stream.css';
 
 function Stream() {
