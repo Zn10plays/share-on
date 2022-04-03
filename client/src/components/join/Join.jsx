@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { isCurrentRoomActive, checkCurrentKey } from '../../api/mannager.js'
+import { isCurrentRoomActive } from '../../api/mannager.js'
 import { useNavigate } from 'react-router-dom'
 import './Join.css'
 
@@ -14,18 +14,18 @@ function App() {
   async function handleSubmit(event) {
     event.preventDefault();
     setBtnDisable(true)
-    checkCurrentKey()
-    // if (await isCurrentRoomActive(roomId)) {
-    //   navigate('/stream/'+roomId);
-    // } else {
-    //   setValidity(false)
-    // }
+    if (await isCurrentRoomActive(roomId)) {
+      navigate('/stream/'+roomId);
+    } else {
+      setValidity(false)
+    }
   }
 
   function handleInput(event) {
     setRoomId(event.target.value)
     if (btnDisabled) {
       setBtnDisable(false)
+      setValidity(true)
     }
   }
 
