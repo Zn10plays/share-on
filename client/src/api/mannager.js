@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -10,4 +12,11 @@ async function isCurrentRoomActive(id) {
   })
 }
 
-export { isCurrentRoomActive };
+async function checkCurrentKey(id) {
+  axios.get('/api')
+  .then(res => {
+    console.log(res.data);
+  })
+}
+
+export { isCurrentRoomActive, checkCurrentKey };

@@ -14,11 +14,11 @@ function Stream() {
 
   return <div className="App">
     <div className="stream">
-    <Nav variant="pills" className='options'>
-      <Nav.Item>
-        <Button  onClick={handleAdd}> Add A Note </Button>
-      </Nav.Item>
-    </Nav>
+      <Nav variant="pills" className='options'>
+        <Nav.Item>
+          <Button  onClick={handleAdd}> Add A Note </Button>
+        </Nav.Item>
+      </Nav>
     </div>
   </div>
 }

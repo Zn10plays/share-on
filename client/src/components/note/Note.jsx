@@ -11,8 +11,8 @@ function Note(ioConnection) {
 
   return <div className="note">
     <div className="heading item-right" >
-        <Button varient="primary"> </Button>
-        <Button varient="danger"> X </Button>
+        <Button variant="primary"> </Button>
+        <Button variant="danger"> X </Button>
     </div>
   </div>
 }

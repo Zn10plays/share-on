@@ -1,7 +1,7 @@
 import { Server }  from 'socket.io';
 import express  from 'express';
-import http from 'http';
-
+import * as http from 'http';
+import cors from 'cors';
 
 const app = express();
 const server = http.createServer(app);
@@ -11,5 +11,9 @@ const io = new Server(server, {
     methods: ['GET', 'POST']
   }
 });
+
+io.on('connection', (io) => {
+  console.log('new conneciton')
+})
 
 server.listen(8888)

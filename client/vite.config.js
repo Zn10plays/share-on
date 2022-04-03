@@ -10,18 +10,14 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8888',
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/'
-        },
+        rewrite: (path) => path.replace(/^\/api/, '/'),
       },
-      '/ws': {
+      '/socket': {
         target: 'ws://localhost:8888',
-        ws: true,
         changeOrigin: true,
-        pathRewrite: {
-          '^/ws': '/'
-        },
-      }
+        rewrite: (path) => path.replace(/^\/api/, '/'),
+        ws: true,
+      },
     }
   }
 })
