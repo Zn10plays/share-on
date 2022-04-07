@@ -1,17 +1,49 @@
+import styles from '../styles/Home.module.css'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import Router from 'next/router'
-import styles from '../styles/Home.module.css'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
   
+  const [buttonsInActive, setButtonsInActive] = useState(false);
+  const [isInvalid, setInvalid] = useState(false);
+  const [roomId, setRoomId] = useState('');
+
+  const router = useRouter();
+
+
+  const handleInput = (event) => {
+    setRoomId(event.target.value)
+    if (isInvalid) {
+      setInvalid(false)
+      setButtonsInActive(false)
+    }
+  }
+  const handleSubmit = async (event) =>  {
+    event.preventDefault();
+    setButtonsInActive(true)
+    
+    if (await isRoomActive(roomId)) {
+      router.push('/room/'+roomId)
+    } else {
+      setInvalid(true);
+    }
+  }
+  const isRoomActive = async (id) => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(true)
+      }, 1000)
+    })
+  }
   return <div className={styles.main}>
-    <Form>
-      <h1>Join a Room</h1>
+    <h2 className='text-center'>Join a Room</h2>
+    <Form className={styles.container} onSubmit={handleSubmit}>
       <Form.Group>
-        <Form.Control className='text-center' placeholder='Room ID?'></Form.Control>
-        <Button variant='primary' type='submit' > Join </Button> {' '} <br />
-        <Button variant='secondary' > Make a new Room </Button> {' '}
+        <Form.Control className='text-center' placeholder='Room ID?' isInvalid={isInvalid} onInput={handleInput}></Form.Control>
+        <Button variant='primary' type='submit' className={styles.btn} disabled={buttonsInActive}> Join </Button> {' '} <br />
+        <Button variant='secondary' className={styles.btn}> Host </Button> {' '}
       </Form.Group>
     </Form>
   </div>

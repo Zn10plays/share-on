@@ -8,6 +8,14 @@
   align-items: center;
 }
 
+.container {
+  border: solid #e0d4d4;
+  background: white;
+  border-radius: 5px;
+  padding: 10px;
+}
+
 .btn {
   width: 100%;
+  margin-top: 3px;
 }
