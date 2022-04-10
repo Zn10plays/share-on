@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { auth } from '../util/database/firesbase'
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import Image from 'react-bootstrap/Image'
 import styles from '../styles/Home.module.css'
 
 
@@ -35,9 +36,7 @@ export default function Home() {
   const handleLogOut = () => {
     signOut(auth).then(() => {
       setUser(null)
-    }).catch((error) => {
-      // An error happened.
-    });
+    })
   }
 
   const handleInput = (event) => {
@@ -76,7 +75,8 @@ export default function Home() {
         <Navbar.Brand href="/"> Share On </Navbar.Brand>
         <div>
            { !user && <Button variant="outline-primary" onClick={handleLogIn}> login </Button> }
-          { user && <Button variant="outline-danger" onClick={handleLogOut}> logout </Button> }
+           { user && <Image src={user.photoURL} width='38' rounded/>} {' '}
+           { user && <Button variant="outline-danger" onClick={handleLogOut}> { user?.displayName } </Button> }
         </div>
       </Container>
     </Navbar>
