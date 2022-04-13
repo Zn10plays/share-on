@@ -29,7 +29,7 @@ export default function Home(user) {
     setButtonsInActive(true)
     
     if (await isRoomActive(roomId)) {
-      router.push('/room/'+roomId)
+      router.push('/r/'+roomId)
     } else {
       setInvalid(true);
     }
@@ -50,7 +50,7 @@ export default function Home(user) {
       createdBy: user?.uid,
       webId: webId
     })
-    router.push('/room/'+webId)
+    router.push('/r/'+webId)
   }
   
   return <> 

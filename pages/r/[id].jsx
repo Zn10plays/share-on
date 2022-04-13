@@ -3,24 +3,35 @@ import Container from 'react-bootstrap/Container';
 import styles from '../../styles/Room.module.css';
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
-import { db } from '../../util/database/firesbase';
+import { db, auth } from '../../util/database/firesbase';
 import { getDocs, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 function Room(user) {
   const router = useRouter();
-  const { id } = router.query;
+  const id = router.query?.id || router.asPath.split('/')[2];
+  const [posts, setPosts] = useState(['l'])
 
   useEffect(() => {
-    const q = query(collection(db, 'vents'), where('webId', '==', id))
-    getDocs(q)
+    if (id === '[id]') return;
+
+    let PostElm = [];
+    getDocs(query(collection(db, 'vents'), where('webId', '==', id)))
     .then(snap => {
-      onSnapshot(collection(db, 'vents/'+snap.docs[0].id+'/room'), (snap) => {
-        console.log(snap.docs.map(e => e.data()))
+      const unsubscribe = onSnapshot(collection(db, 'vents/'+snap.docs[0].id+'/room'), (snap) => {
+        PostElm = snap.docs.map(doc => {
+          return <ClipBoard key={doc.id} data={doc.data()}/>
+        })
+        setPosts(PostElm);  
       })
-    })
-    
-  })
+
+      auth.onAuthStateChanged(user => {
+        if (!user) {
+          unsubscribe()
+        }
+      })
+    }).catch((e) => {})
+  }, [id])
 
   const handleAdd = async () => {
 
@@ -35,10 +46,17 @@ function Room(user) {
         </Container>
       </Navbar>
     
-      <Container className={styles.list}>
-        
-      </Container>
+      <div className={styles.list}>
+        { posts }
+      </div>
     </div>
+  </div>
+}
+
+function ClipBoard({data}) {
+  console.log(data.id)
+  return <div className='Post'>
+    <h3>{data.data}</h3>
   </div>
 }
 
