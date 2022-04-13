@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }) {
       const provider = new GoogleAuthProvider();
       signInWithPopup(auth, provider)
       .then(({user}) => {
-        console.log(user);
+        console.log(user)
         setUser(user)
       })
     } catch (e) {
@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }) {
       <Container fluid>
         <Navbar.Brand href="/"> Share On </Navbar.Brand>
         <div>
-          { !user && <> <Button variant="outline-primary" onClick={handleLogIn}> login </Button> </>}
+          { !user && <> <Button variant="outline-primary" onClick={handleLogIn}> SigIn with Google </Button> </>}
           { user && <> 
             <Image src={user.photoURL} width='38' rounded/> {' '}
             <Button variant="outline-danger" onClick={handleLogOut}> { user?.displayName } </Button> 
@@ -44,7 +44,7 @@ function MyApp({ Component, pageProps }) {
       </Container>
     </Navbar>
 
-    <Component {...pageProps} /> 
+    <Component {...pageProps} {...user} /> 
   </>
 }
 

@@ -1,0 +1,16 @@
+.main {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  height: 80vh;
+  width: 80vw;
+  border: solid;
+  padding: none;
+  border-radius: 10px;
+  background-color: white;
+}
