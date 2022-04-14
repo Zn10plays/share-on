@@ -4,13 +4,15 @@ import styles from '../../styles/Room.module.css';
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import { db, auth } from '../../util/database/firesbase';
-import { getDocs, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { getDocs, collection, query, where, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import Modal from 'react-bootstrap/Modal'
 
 function Room(user) {
   const router = useRouter();
   const id = router.query?.id || router.asPath.split('/')[2];
-  const [posts, setPosts] = useState(['l'])
+  const [conId, setConId] = useState(null)
+  const [posts, setPosts] = useState(["Mb bro I am currently loading"])
 
   useEffect(() => {
     if (id === '[id]') return;
@@ -18,6 +20,8 @@ function Room(user) {
     let PostElm = [];
     getDocs(query(collection(db, 'vents'), where('webId', '==', id)))
     .then(snap => {
+      if (!conId) setConId('vents/'+snap.docs[0].id+'/room');
+
       const unsubscribe = onSnapshot(collection(db, 'vents/'+snap.docs[0].id+'/room'), (snap) => {
         PostElm = snap.docs.map(doc => {
           return <ClipBoard key={doc.id} data={doc.data()}/>
@@ -30,11 +34,18 @@ function Room(user) {
           unsubscribe()
         }
       })
-    }).catch((e) => {})
+    }).catch((e) => {
+      console.warn(e);
+    })
   }, [id])
 
   const handleAdd = async () => {
-
+    addDoc(collection(db, conId), {
+      data: 'click edit to edit this.',
+      createdBy: user.uid,
+      createdAt: serverTimestamp(),
+      type: 'plaintext'
+    })
   }
 
   return <div className={styles.main}>
@@ -54,9 +65,23 @@ function Room(user) {
 }
 
 function ClipBoard({data}) {
-  console.log(data.id)
+  const [edit, setEdit] = useState(false);
+
+  const handleEdit = () => {
+    setEdit(true);
+  }
+
   return <div className='Post'>
-    <h3>{data.data}</h3>
+    <Modal.Dialog>
+      <Modal.Body>
+        <p>Modal body text goes here.</p>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="danger">Close</Button>
+        <Button variant={edit ? "success" : "primary"} onClick={handleEdit} >Edit</Button>
+      </Modal.Footer>
+    </Modal.Dialog>
   </div>
 }
 
