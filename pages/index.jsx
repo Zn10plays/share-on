@@ -6,16 +6,16 @@ import Form from 'react-bootstrap/Form'
 import styles from '../styles/Home.module.css'
 import { db } from '../util/database/firesbase'
 import { createNewId } from '../util/randId'
+import { auth } from '../util/database/firesbase'
 
 
-export default function Home(user) {
+export default function Home() {
   
   const [buttonsInActive, setButtonsInActive] = useState(false);
   const [isInvalid, setInvalid] = useState(false);
   const [roomId, setRoomId] = useState('');
-
   const router = useRouter();
-  
+
   const handleInput = (event) => {
     setRoomId(event.target.value)
     if (isInvalid) {
@@ -42,7 +42,9 @@ export default function Home(user) {
   }
 
   const handleCreate = async () => {
+    const user = auth.currentUser
     if (!user) return;
+
     const webId = createNewId({len: 6})
     const ref = await collection(db, 'vents')
     await addDoc(ref, {
@@ -60,7 +62,7 @@ export default function Home(user) {
         <Form.Group>
           <Form.Control className='text-center' placeholder='Room ID?' isInvalid={isInvalid} onInput={handleInput}></Form.Control>
           <Button variant='primary' type='submit' className={styles.btn} disabled={buttonsInActive}> Join </Button> {' '} <br />
-          <Button variant='secondary' className={styles.btn} onClick={handleCreate}> Host </Button> {' '}
+          <Button variant='secondary' className={styles.btn} disabled={!auth.currentUser} onClick={handleCreate}> Host </Button> {' '}
         </Form.Group> 
       </Form>
     </div>

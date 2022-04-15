@@ -4,15 +4,24 @@ import styles from '../../styles/Room.module.css';
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import { db, auth } from '../../util/database/firesbase';
-import { getDocs, collection, query, where, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+import { 
+  getDocs, 
+  collection, 
+  query, 
+  where, 
+  onSnapshot, 
+  addDoc, 
+  serverTimestamp, 
+  updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal'
 
-function Room(user) {
+function Room() {
   const router = useRouter();
   const id = router.query?.id || router.asPath.split('/')[2];
-  const [conId, setConId] = useState(null)
+  const [collRef, setcollRef] = useState(null)
   const [posts, setPosts] = useState(["Mb bro I am currently loading"])
+  const [user, setUser] = useState(auth.currentUser);
 
   useEffect(() => {
     if (id === '[id]') return;
@@ -20,27 +29,35 @@ function Room(user) {
     let PostElm = [];
     getDocs(query(collection(db, 'vents'), where('webId', '==', id)))
     .then(snap => {
-      if (!conId) setConId('vents/'+snap.docs[0].id+'/room');
+      let collectionRef;
+      if (collRef) {
+        collectionRef = collRef
+      } else {
+        collectionRef = collection(db, 'vents', snap.docs[0].id, 'room');
+        setcollRef(collectionRef);
+      }
 
-      const unsubscribe = onSnapshot(collection(db, 'vents/'+snap.docs[0].id+'/room'), (snap) => {
+      const unsubscribe = onSnapshot(collectionRef, (snap) => {
         PostElm = snap.docs.map(doc => {
-          return <ClipBoard key={doc.id} data={doc.data()}/>
+          return <ClipBoard _id={doc.id} data={doc.data()}/>
         })
         setPosts(PostElm);  
       })
 
       auth.onAuthStateChanged(user => {
+        setUser(user);
         if (!user) {
           unsubscribe()
         }
       })
     }).catch((e) => {
       console.warn(e);
+      router.push('/')
     })
   }, [id])
 
   const handleAdd = async () => {
-    addDoc(collection(db, conId), {
+    addDoc(collRef, {
       data: 'click edit to edit this.',
       createdBy: user.uid,
       createdAt: serverTimestamp(),
@@ -64,22 +81,23 @@ function Room(user) {
   </div>
 }
 
-function ClipBoard({data}) {
+function ClipBoard({data, _id}) {
   const [edit, setEdit] = useState(false);
+  const [plainText, setText] = useState(data.data)
 
-  const handleEdit = () => {
-    setEdit(true);
+  const handleEditAndSave = () => {
+    setEdit(!edit);
   }
 
   return <div className='Post'>
     <Modal.Dialog>
       <Modal.Body>
-        <p>Modal body text goes here.</p>
+        <p className={edit ? styles.border : undefined} contentEditable={edit}> {plainText} </p>
       </Modal.Body>
 
       <Modal.Footer>
         <Button variant="danger">Close</Button>
-        <Button variant={edit ? "success" : "primary"} onClick={handleEdit} >Edit</Button>
+        <Button variant={edit ? "success" : "primary"} onClick={handleEditAndSave}> {edit ? 'Save' : 'Edit'} </Button>
       </Modal.Footer>
     </Modal.Dialog>
   </div>

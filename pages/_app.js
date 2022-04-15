@@ -8,25 +8,25 @@ import { auth } from '../util/database/firesbase';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 function MyApp({ Component, pageProps }) {
-
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(auth.currentUser);
 
   const handleLogIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
       signInWithPopup(auth, provider)
-      .then(({user}) => {
-        console.log(user)
-        setUser(user)
-      })
     } catch (e) {
       console.log(e);
     }
   }
 
+  auth.onAuthStateChanged((user) => {
+    if (!user) return;
+    setUser(user);
+  })
+
   const handleLogOut = () => {
     signOut(auth).then(() => {
-      setUser(null)
+      setUser(null);
     })
   }
 
@@ -36,15 +36,15 @@ function MyApp({ Component, pageProps }) {
         <Navbar.Brand href="/"> Share On </Navbar.Brand>
         <div>
           { !user && <> <Button variant="outline-primary" onClick={handleLogIn}> SigIn with Google </Button> </>}
-          { user && <> 
+          { user && <>
             <Image src={user.photoURL} width='38' rounded/> {' '}
-            <Button variant="outline-danger" onClick={handleLogOut}> { user?.displayName } </Button> 
+            <Button variant="outline-danger" onClick={handleLogOut}> { user?.displayName } </Button>
           </> }
         </div>
       </Container>
     </Navbar>
 
-    <Component {...pageProps} {...user} /> 
+    <Component {...pageProps} />
   </>
 }
 
