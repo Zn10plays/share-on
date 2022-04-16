@@ -1,4 +1,3 @@
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Button from 'react-bootstrap/Button'
@@ -7,6 +6,11 @@ import styles from '../styles/Home.module.css'
 import { db } from '../util/database/firesbase'
 import { createNewId } from '../util/randId'
 import { auth } from '../util/database/firesbase'
+import { 
+  doc, 
+  addDoc, 
+  serverTimestamp, 
+  getDoc} from 'firebase/firestore'
 
 function Join() {
   const [buttonsInActive, setButtonsInActive] = useState(false);
@@ -34,9 +38,8 @@ function Join() {
   }
 
   const isRoomActive = async (id) => {
-    const ref = await collection(db, 'vents')
-    const doc = await getDocs(query(ref, where('webId', '==', id)))
-    return doc.docs.length > 0;
+    const room = await getDoc(doc(db, 'rooms', id))
+    return room.data()?.isActive
   }
 
   const handleCreate = async () => {
@@ -44,11 +47,11 @@ function Join() {
     if (!user) return;
 
     const webId = createNewId({len: 6})
-    const ref = await collection(db, 'vents')
-    await addDoc(ref, {
-      createdAt: new serverTimestamp(),
+    const ref = await collection(db, 'rooms')
+    await addDoc(ref, webId, {
+      createdAt: serverTimestamp(),
       createdBy: user?.uid,
-      webId: webId
+      isActive: true
     })
     router.push('/r/'+webId)
   }

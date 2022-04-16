@@ -5,10 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import { db, auth } from '../util/database/firesbase';
 import { 
-  getDocs, 
   collection, 
-  query, 
-  where, 
   onSnapshot, 
   addDoc, 
   serverTimestamp, 
@@ -18,48 +15,46 @@ import ClipBoard from './ClipBoard';
 
 export default function Stream() {
   const router = useRouter();
-  const id = router.query?.id || router.asPath.split('/')[2];
-  const [collRef, setcollRef] = useState(null)
+  
+  const [roomId, setRoomId] = useState(null);
   const [posts, setPosts] = useState(["Mb bro I am currently loading"])
   const [user, setUser] = useState(auth.currentUser);
+  const [collRef, setCollRef] = useState(null)
+
+  auth.onAuthStateChanged((user) => {
+    setUser(user);
+  })
 
   useEffect(() => {
-    if (id === '[id]') return;
+    if (roomId) return;
+    const id = router.query.id || router.asPath.split('/')[2]
+    if (id !== '[id]') {
+      setRoomId(id);
+    }
+  })
 
-    let PostElm;
+  console.log(roomId)
+  useEffect(() => {
+    if (!roomId) return;
 
-    getDocs(query(collection(db, 'vents'), where('webId', '==', id)))
-    .then(snap => {
-      let collectionRef;
-      if (collRef) {
-        collectionRef = collRef
-      } else {
-        collectionRef = collection(db, 'vents', snap.docs[0].id, 'room');
-        setcollRef(collectionRef);
-      }
+    let ref;
+    if (collRef) {
+      ref = collRef;
+    } else {
+      ref = collection(db, 'rooms', roomId, 'posts')
+      setCollRef(ref);
+    }
 
-      const unsubscribe = onSnapshot(collectionRef, (snap) => {
-        PostElm = snap.docs.map(doc => {
-          return <ClipBoard id={doc.id} dbRef={collectionRef} data={doc.data()}/>
-        })
-        setPosts(PostElm);  
-      })
-
-      auth.onAuthStateChanged(user => {
-        setUser(user);
-        if (!user) {
-          unsubscribe()
-        }
-      })
+    onSnapshot(ref, (snap) => {
+      console.log(snap.docs.map(doc => doc.data()))
     })
-    .catch((e) => {
-      router.push('/')
-    })
-  }, [id])
+    
+    // setPosts();
+  }, [roomId])
 
   const handleAdd = async () => {
     addDoc(collRef, {
-      data: 'click edit to edit this.',
+      value: await navigator.clipboard.readText() || 'click edit to edit this.',
       createdBy: user.uid,
       createdAt: serverTimestamp(),
       type: 'plaintext'
@@ -71,7 +66,7 @@ export default function Stream() {
       <div className={styles.box}>
         <Navbar bg="dark" expand="lg" variant='dark'>
           <Container fluid>
-            <Navbar.Brand > Room ID: { id } </Navbar.Brand>
+            <Navbar.Brand > Room ID: { roomId } </Navbar.Brand>
             <Button variant="primary" onClick={handleAdd} disabled={!(user?.uid)}> Add Note </Button>
           </Container>
         </Navbar>
