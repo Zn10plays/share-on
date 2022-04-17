@@ -46,7 +46,7 @@ export default function Stream() {
     }
 
     onSnapshot(ref, (snap) => {
-      console.log(snap.docs.map(doc => doc.data()))
+      setPosts(snap.docs.map(doc => <ClipBoard doc={doc}/>))
     })
     
     // setPosts();

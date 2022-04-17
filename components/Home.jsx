@@ -8,12 +8,14 @@ import { createNewId } from '../util/randId'
 import { auth } from '../util/database/firesbase'
 import { 
   doc, 
-  addDoc, 
+  setDoc, 
   serverTimestamp, 
-  getDoc} from 'firebase/firestore'
+  getDoc,
+} from 'firebase/firestore'
 
 function Join() {
   const [buttonsInActive, setButtonsInActive] = useState(false);
+  const [user, setUser] = useState(auth.currentUser);
   const [isInvalid, setInvalid] = useState(false);
   const [roomId, setRoomId] = useState('');
   const router = useRouter();
@@ -47,14 +49,18 @@ function Join() {
     if (!user) return;
 
     const webId = createNewId({len: 6})
-    const ref = await collection(db, 'rooms')
-    await addDoc(ref, webId, {
+    const ref = await doc(db, 'room', webId)
+    await setDoc(ref, {
       createdAt: serverTimestamp(),
       createdBy: user?.uid,
       isActive: true
     })
     router.push('/r/'+webId)
   }
+
+  auth.onAuthStateChanged((user) => {
+    setUser(user)
+  })
 
   return <> 
     <div className={styles.main}>
@@ -63,7 +69,7 @@ function Join() {
         <Form.Group>
           <Form.Control className='text-center' placeholder='Room ID?' isInvalid={isInvalid} onInput={handleInput}></Form.Control>
           <Button variant='primary' type='submit' className={styles.btn} disabled={buttonsInActive}> Join </Button> {' '} <br />
-          <Button variant='secondary' className={styles.btn} disabled={!auth.currentUser} onClick={handleCreate}> Host </Button> {' '}
+          <Button variant='secondary' className={styles.btn} disabled={!user} onClick={handleCreate}> Host </Button> {' '}
         </Form.Group> 
       </Form>
     </div>

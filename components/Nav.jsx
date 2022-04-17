@@ -32,13 +32,13 @@ function Nav() {
   }
 
   return <>
-    <Navbar bg="dark" expand="lg" variant='dark'>
+    <Navbar bg="dark" expand="lg" variant='white'>
       <Container fluid>
         <Navbar.Brand href="/"> Share On </Navbar.Brand>
         <div>
           { !user && <> <Button variant="outline-primary" onClick={handleLogIn}> SigIn with Google </Button> </>}
           { user && <>
-            <Image src={user.photoURL} width='38' rounded/> {' '}
+            <Image src={user.photoURL} width='38' height='38' rounded/> {' '}
             <Button variant="outline-danger" onClick={handleLogOut}> { user?.displayName } </Button>
           </> }
         </div>
