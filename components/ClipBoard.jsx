@@ -1,3 +1,6 @@
+// used by Room
+// current path /r/*
+
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -18,7 +21,7 @@ export default function ClipBoard({data}) {
   return <div className='Post'>
     <Modal.Dialog>
       <Modal.Body>
-        <p className={edit ? styles.border : undefined} contentEditable={edit} onInput={handleInput}> {data.data} </p>
+        <p className={edit ? styles.border : undefined} contentEditable={edit} onInput={handleInput}> {data} </p>
       </Modal.Body>
 
       <Modal.Footer>

@@ -1,3 +1,5 @@
+// Current path /r/[roomId]
+
 import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
 import styles from '../styles/Room.module.css';
@@ -48,8 +50,6 @@ export default function Stream() {
     onSnapshot(ref, (snap) => {
       setPosts(snap.docs.map(doc => <ClipBoard doc={doc}/>))
     })
-    
-    // setPosts();
   }, [roomId])
 
   const handleAdd = async () => {

@@ -1,4 +1,6 @@
-import { useState } from 'react'
+// current path '/'
+
+import { useState, createRef } from 'react'
 import { useRouter } from 'next/router'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -17,20 +19,14 @@ function Join() {
   const [buttonsInActive, setButtonsInActive] = useState(false);
   const [user, setUser] = useState(auth.currentUser);
   const [isInvalid, setInvalid] = useState(false);
-  const [roomId, setRoomId] = useState('');
+  const inputRef = createRef();
   const router = useRouter();
-
-  const handleInput = (event) => {
-    setRoomId(event.target.value)
-    if (isInvalid) {
-      setInvalid(false)
-      setButtonsInActive(false)
-    }
-  }
 
   const handleSubmit = async (event) =>  {
     event.preventDefault();
     setButtonsInActive(true)
+    const roomId = inputRef.current.value;
+    console.log(roomId)
     
     if (await isRoomActive(roomId)) {
       router.push('/r/'+roomId)
@@ -67,7 +63,7 @@ function Join() {
       <h2 className='text-center'>Join a Room</h2>
       <Form className={styles.container} onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Control className='text-center' placeholder='Room ID?' isInvalid={isInvalid} onInput={handleInput}></Form.Control>
+          <Form.Control className='text-center' placeholder='Room ID?' isInvalid={isInvalid} ref={inputRef} />
           <Button variant='primary' type='submit' className={styles.btn} disabled={buttonsInActive}> Join </Button> {' '} <br />
           <Button variant='secondary' className={styles.btn} disabled={!user} onClick={handleCreate}> Host </Button> {' '}
         </Form.Group> 
