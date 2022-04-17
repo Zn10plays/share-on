@@ -14,3 +14,17 @@
   border-radius: 10px;
   background-color: white;
 }
+
+.border {
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.btn {
+  width: 46px;
+  height: 38px;
+}
+
+.input {
+  margin: none;
+}
