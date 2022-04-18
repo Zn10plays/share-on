@@ -8,7 +8,7 @@ import { auth } from '../util/database/firesbase';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import styles from '../styles/Home.module.css'
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps}) {
   const [user, setUser] = useState(auth.currentUser);
 
   const handleLogIn = async () => {

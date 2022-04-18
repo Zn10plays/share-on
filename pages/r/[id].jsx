@@ -9,13 +9,11 @@ import {
   onSnapshot, 
   addDoc, 
   serverTimestamp,
-  orderBy,
-  query, 
 } from 'firebase/firestore';
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState, memo, Component } from 'react';
 import ClipBoard from '../../Component/Clipboard';
 
- function Stream() {
+function Stream() {
   const router = useRouter();
   
   const [posts, setPosts] = useState(["Mb bro I am currently loading"])
@@ -43,7 +41,6 @@ import ClipBoard from '../../Component/Clipboard';
       ref = collRef;
     } else {
       ref = collection(db, 'rooms', roomId, 'posts')
-      // ref = query(coll, orderBy('createdAt', ''))
       setCollRef(ref);
     }
 
@@ -51,12 +48,12 @@ import ClipBoard from '../../Component/Clipboard';
       setPosts(snap.docs.map(doc => <ClipBoard docs={doc} id={roomId} />))
     });
 
-    return () => unsubscribe();
+    return () => { unsubscribe() };
   }, [roomId])
 
   const handleAdd = async () => {
     addDoc(collRef, {
-      value: await navigator.clipboard.readText() || 'click edit to edit this.',
+      value: 'click edit to edit this.',
       createdBy: user.uid,
       createdAt: serverTimestamp(),
       type: 'plaintext'
@@ -81,4 +78,5 @@ import ClipBoard from '../../Component/Clipboard';
   </>
 }
 
-export default memo(Stream);
+
+export default Stream;

@@ -1,4 +1,4 @@
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Button from 'react-bootstrap/Button'
@@ -36,7 +36,7 @@ export default function Home() {
   }
 
   const isRoomActive = async (id) => {
-    return true;
+    return (await getDoc(doc('rooms', id))).data()?.isActive
   }
 
   const handleCreate = async () => {

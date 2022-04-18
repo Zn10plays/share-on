@@ -15,8 +15,5 @@ const app = initializeApp({
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-connectAuthEmulator(auth, 'http://localhost:5555')
-connectFirestoreEmulator(db, 'localhost', 8080)
-
 export { db, auth }
 export default app
