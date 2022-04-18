@@ -31,7 +31,7 @@ function Stream() {
     if (id !== '[id]') {
       setRoomId(id);
     }
-  })
+  }, [roomId, router.query.id, router.asPath])
 
   useEffect(() => {
     if (!roomId) return;
@@ -45,7 +45,7 @@ function Stream() {
     }
 
     const unsubscribe = onSnapshot(ref, (snap) => {
-      setPosts(snap.docs.map(doc => <ClipBoard docs={doc} id={roomId} />))
+      setPosts(snap.docs.map(doc => <ClipBoard key={doc.id} docs={doc} id={roomId} />))
     });
 
     return () => { unsubscribe() };

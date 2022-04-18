@@ -36,7 +36,7 @@ export default function Home() {
   }
 
   const isRoomActive = async (id) => {
-    return (await getDoc(doc('rooms', id))).data()?.isActive
+    return (await getDoc(doc(db, 'rooms', id))).data()?.isActive
   }
 
   const handleCreate = async () => {

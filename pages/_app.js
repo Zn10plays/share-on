@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps}) {
         <div>
           { !user && <> <Button variant="outline-primary" onClick={handleLogIn}> SigIn with Google </Button> </>}
           { user && <>
-            <Image src={user.photoURL} className={styles.img} rounded/> {' '}
+            <Image src={user.photoURL} className={styles.img} alt='' rounded/> {' '}
             <Button variant="outline-danger" onClick={handleLogOut}> { user?.displayName } </Button>
           </> }
         </div>
