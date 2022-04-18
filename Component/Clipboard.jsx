@@ -32,8 +32,8 @@ function ClipBoard({docs, id}) {
 
       <Modal.Footer>
         <Button variant="danger" onClick={handleDelete}> {'🗑️'} </Button>
-        { !edit && <Button variant={"primary"} className={styles.btn} onClick={handleEdit}> {'💾'} </Button> }
-        { edit && <Button variant={"success"} className={styles.btn} onClick={handleSave}> {'✎'} </Button> }
+        { !edit && <Button variant={"primary"} className={styles.btn} onClick={handleEdit}> {'✎'} </Button> }
+        { edit && <Button variant={"success"} className={styles.btn} onClick={handleSave}> {'💾'} </Button> }
       </Modal.Footer>
     </Modal.Dialog>
   </div>

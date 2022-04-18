@@ -8,7 +8,9 @@ import {
   collection, 
   onSnapshot, 
   addDoc, 
-  serverTimestamp, 
+  serverTimestamp,
+  orderBy,
+  query, 
 } from 'firebase/firestore';
 import { useEffect, useState, memo } from 'react';
 import ClipBoard from '../../Component/Clipboard';
@@ -16,9 +18,9 @@ import ClipBoard from '../../Component/Clipboard';
  function Stream() {
   const router = useRouter();
   
-  const [roomId, setRoomId] = useState(null);
   const [posts, setPosts] = useState(["Mb bro I am currently loading"])
   const [user, setUser] = useState(auth.currentUser);
+  const [roomId, setRoomId] = useState(null);
   const [collRef, setCollRef] = useState(null)
 
   auth.onAuthStateChanged((user) => {
@@ -41,13 +43,15 @@ import ClipBoard from '../../Component/Clipboard';
       ref = collRef;
     } else {
       ref = collection(db, 'rooms', roomId, 'posts')
+      // ref = query(coll, orderBy('createdAt', ''))
       setCollRef(ref);
     }
 
-    onSnapshot(ref, (snap) => {
+    const unsubscribe = onSnapshot(ref, (snap) => {
       setPosts(snap.docs.map(doc => <ClipBoard docs={doc} id={roomId} />))
     });
 
+    return () => unsubscribe();
   }, [roomId])
 
   const handleAdd = async () => {
